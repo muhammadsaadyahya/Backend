@@ -13,10 +13,8 @@ const activityLogSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
-  },
-  updatedAt: { type: Date, default: Date.now },
-  action: String,
-});
+  }
+}, { timestamps: true });
 
 const caseSchema = new mongoose.Schema(
   {

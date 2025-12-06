@@ -1,0 +1,259 @@
+Below is the **complete and final Database Schema (MongoDB)** for the *LegalMind* project — fully based on:
+
+✔ Your project proposal
+✔ Course guidelines
+✔ MERN architecture
+✔ Without Python (AI via Node.js)
+
+This is the **recommended MongoDB collection structure** with all **attributes/fields** clearly defined.
+
+---
+
+# ✅ **📌 MASTER DATABASE SCHEMA (MongoDB) — All Attributes**
+# 1️⃣ **Users Collection** (`users`)
+
+Stores all Clients, Lawyers, Admins.
+
+### **Attributes**
+
+| Field           | Type     | Description                                |
+| --------------- | -------- | ------------------------------------------ |
+| `_id`           | ObjectId | Primary key                                |
+| `role`          | String   | "client" / "lawyer" / "admin"              |
+| `fullName`      | String   | User’s name                                |
+| `email`         | String   | Unique                                     |
+| `password`      | String   | Hashed                                     |
+| `phone`         | String   | Optional                                   |
+| `gender`        | String   | Optional                                   |
+| `bio`           | String   | Short description (required by guidelines) |
+| `avatar`        | String   | Profile picture URL                        |
+| `location`      | String   | City/Address                               |
+| `createdAt`     | Date     | Auto                                       |
+| `updatedAt`     | Date     | Auto                                       |
+| `isVerified`    | Boolean  | Email verification                         |
+| `lastLogin`     | Date     | For analytics                              |
+| `notifications` | Array    | Unread notifications                       |
+
+---
+
+# 2️⃣ **Cases Collection** (`cases`)
+
+Represents legal cases between client & lawyer.
+
+### **Attributes**
+
+| Field              | Type                                     |
+| ------------------ | ---------------------------------------- |
+| `_id`              | ObjectId                                 |
+| `title`            | String                                   |
+| `description`      | String                                   |
+| `clientId`         | ObjectId (ref: users)                    |
+| `lawyerId`         | ObjectId (ref: users)                    |
+| `status`           | String (“open”, “in-progress”, “closed”) |
+| `caseType`         | String                                   |
+| `priority`         | String (low/medium/high)                 |
+| `milestones`       | Array of milestone objects               |
+| `deadlines`        | Array                                    |
+| `documents`        | Array of document IDs                    |
+| `activityLog`      | Array (each entry = who updated + when)  |
+| `predictedOutcome` | Object (from AI)                         |
+| `createdAt`        | Date                                     |
+| `updatedAt`        | Date                                     |
+
+### Milestone object fields:
+
+* `title`
+* `description`
+* `dueDate`
+* `isCompleted`
+* `completedAt`
+
+---
+
+# 3️⃣ **Documents Collection** (`documents`)
+
+Stores legal document metadata.
+
+### **Attributes**
+
+| Field           | Type                          |
+| --------------- | ----------------------------- |
+| `_id`           | ObjectId                      |
+| `caseId`        | ObjectId                      |
+| `uploadedBy`    | ObjectId                      |
+| `fileName`      | String                        |
+| `fileUrl`       | String (AWS S3 or Cloudinary) |
+| `fileType`      | String (pdf/doc/jpg/png)      |
+| `fileSize`      | Number                        |
+| `textExtracted` | String (for RAG)              |
+| `summary`       | String (AI summary)           |
+| `embeddingId`   | String (vector DB reference)  |
+| `createdAt`     | Date                          |
+
+---
+
+# 4️⃣ **Chats Collection** (`chats`)
+
+Each chat contains messages between client ↔ lawyer.
+
+### **Attributes**
+
+| Field          | Type                     |
+| -------------- | ------------------------ |
+| `_id`          | ObjectId                 |
+| `caseId`       | ObjectId                 |
+| `participants` | Array of user IDs        |
+| `messages`     | Array of message objects |
+| `createdAt`    | Date                     |
+
+### Message object fields:
+
+* `senderId`
+* `message`
+* `sentAt`
+* `isSeen`
+
+---
+
+# 5️⃣ **Notifications Collection** (`notifications`)
+
+### **Attributes**
+
+| Field         | Type                                     |
+| ------------- | ---------------------------------------- |
+| `_id`         | ObjectId                                 |
+| `userId`      | ObjectId                                 |
+| `title`       | String                                   |
+| `description` | String                                   |
+| `type`        | String (“case-update”, “chat”, “system”) |
+| `isRead`      | Boolean                                  |
+| `createdAt`   | Date                                     |
+
+---
+
+# 6️⃣ **Blogs Collection** (`blogs`)
+
+For required course guideline “Blog module”.
+
+### **Attributes**
+
+| Field       | Type     |
+| ----------- | -------- |
+| `_id`       | ObjectId |
+| `title`     | String   |
+| `content`   | String   |
+| `thumbnail` | String   |
+| `authorId`  | ObjectId |
+| `tags`      | Array    |
+| `createdAt` | Date     |
+| `updatedAt` | Date     |
+
+---
+
+# 7️⃣ **AI Queries Collection** (`ai_queries`)
+
+Stores RAG/Summary queries for analytics.
+
+### **Attributes**
+
+| Field          | Type     |
+| -------------- | -------- |
+| `_id`          | ObjectId |
+| `userId`       | ObjectId |
+| `caseId`       | ObjectId |
+| `documentId`   | ObjectId |
+| `query`        | String   |
+| `answer`       | String   |
+| `sourceChunks` | Array    |
+| `createdAt`    | Date     |
+
+---
+
+# 8️⃣ **Activity Logs Collection** (`activity_logs`)
+
+Tracks user and admin actions.
+
+### **Attributes**
+
+| Field         | Type     |
+| ------------- | -------- |
+| `_id`         | ObjectId |
+| `userId`      | ObjectId |
+| `ipAddress`   | String   |
+| `action`      | String   |
+| `description` | String   |
+| `createdAt`   | Date     |
+
+---
+
+# 9️⃣ **Contact / Support Collection** (`contact_messages`)
+
+For the contact page in course guidelines.
+
+### **Attributes**
+
+| Field       | Type     |
+| ----------- | -------- |
+| `_id`       | ObjectId |
+| `name`      | String   |
+| `email`     | String   |
+| `message`   | String   |
+| `createdAt` | Date     |
+
+---
+
+# 🔟 **Analytics Collection** (`analytics`)
+
+System-wide analytics for Admin Dashboard.
+
+### **Attributes**
+
+| Field         | Type     |
+| ------------- | -------- |
+| `_id`         | ObjectId |
+| `date`        | Date     |
+| `activeUsers` | Number   |
+| `newCases`    | Number   |
+| `aiQueries`   | Number   |
+| `storageUsed` | Number   |
+| `pageViews`   | Number   |
+
+---
+
+# ⭐ Optional (Only if needed by teacher)
+
+### **11️⃣ Cash Flow Collection** (`cash_flow`)
+
+If you include debit/credit feature.
+
+| Field         | Type                        |
+| ------------- | --------------------------- |
+| `_id`         | ObjectId                    |
+| `userId`      | ObjectId                    |
+| `amount`      | Number                      |
+| `type`        | String ("debit" / "credit") |
+| `description` | String                      |
+| `createdAt`   | Date                        |
+
+---
+
+# ✅ THIS LIST IS 100% COMPLETE
+
+It includes:
+
+✔ All required attributes
+✔ All collections used in full MERN projects
+✔ All course requirements
+✔ All features from your proposal
+✔ Without Python — fully Node.js compatible
+
+---
+
+# If you want, I can generate:
+
+📄 **PDF of the complete database schema**
+🗂 **ERD Diagram (as image or PDF)**
+📘 **API Routes Documentation**
+⚙️ **Backend folder structure**
+
+Just tell me!
