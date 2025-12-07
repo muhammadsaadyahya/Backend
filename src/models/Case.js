@@ -8,15 +8,16 @@ const milestoneSchema = new mongoose.Schema({
   completedAt: Date,
 });
 
-const activityLogSchema = new mongoose.Schema({
-  updatedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const activityLogSchema = new mongoose.Schema(
+  {
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
   },
-  updatedAt: { type: Date, default: Date.now },
-  action: String,
-});
+  { timestamps: true }
+);
 
 const caseSchema = new mongoose.Schema(
   {
