@@ -7,7 +7,7 @@ import notificationRoutes from "./src/routes/notificationRoutes.js";
 import searchRoutes from "./src/routes/searchRoutes.js";
 import cashFlowRoutes from "./src/routes/cashFlowRoutes.js";
 // import chatRoutes from "./src/routes/chatRoutes.js";
-
+import aiRoutes from "./src/routes/aiRoutes.js";
 import connectDB from "./src/config/db.js";
 import path from "path";
 import http from "http";
@@ -32,6 +32,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 // app.use("/api/cases", caseRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/ai", aiRoutes);
+
 // app.use("/api/chats", chatRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/search", searchRoutes);
@@ -42,4 +44,6 @@ io.on("connection", (socket) => {
   chatHandlers(io, socket);
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+server.listen(5000, () => {
+  console.log("HTTP + Socket.IO running on port 5000");
+});
