@@ -4,11 +4,13 @@ import {
   sendMessage,
   markSeen,
 } from "../service/chatService.js";
+import mongoose from "mongoose";
 
 export default function chatHandlers(io, socket) {
-  // User joins a chat room for a given caseId
   socket.on("joinChat", async ({ caseId, userId }) => {
-    if (!caseId || !userId) return;
+    if (!caseId || !userId) {
+      console.log("User or CaseId not found");
+    }
 
     socket.join(caseId);
     console.log(`User ${userId} joined chat room: ${caseId}`);
@@ -21,33 +23,50 @@ export default function chatHandlers(io, socket) {
     }
   });
 
-  // Explicitly create chat if needed
   socket.on("createChat", async ({ caseId }) => {
-    if (!caseId) return;
+    if (!caseId) {
+      console.log("createChat event received with empty caseId");
+      return;
+    }
+    caseId = new mongoose.Types.ObjectId(caseId);
 
     try {
+      console.log(`Creating chat for caseId: ${caseId}`);
       const chat = await createChat(caseId);
+      console.log("Chat created:", chat);
       socket.emit("chatCreated", chat);
     } catch (error) {
+      console.error("Error in createChat handler:", error);
       socket.emit("errorMessage", error.message);
     }
   });
 
-  // Send message to the chat room (caseId)
   socket.on("sendMessage", async ({ caseId, userId, message }) => {
-    if (!caseId || !userId || !message) return;
+    console.log(
+      `[sendMessage] Received - caseId: ${caseId}, userId: ${userId}, message: "${message}"`
+    );
+
+    if (!caseId || !userId || !message) {
+      console.warn("[sendMessage] Missing caseId, userId, or message");
+      return;
+    }
 
     try {
-      const newMessage = await sendMessage(caseId, userId, message);
+      // FIX: Map 'message' to 'messageText'
+      const newMessage = await sendMessage({
+        caseId,
+        userId,
+        messageText: message,
+      });
 
-      // Broadcast new message to all in the chat room
+      console.log("[sendMessage] Message sent successfully:", newMessage);
       io.to(caseId).emit("newMessage", newMessage);
     } catch (error) {
+      console.error("[sendMessage] Error sending message:", error);
       socket.emit("errorMessage", error.message);
     }
   });
 
-  // Mark all messages as seen in a chat
   socket.on("markSeen", async ({ caseId }) => {
     if (!caseId) return;
 
@@ -60,15 +79,12 @@ export default function chatHandlers(io, socket) {
     }
   });
 
-  // Typing indicator: notify others in the room that user is typing
   socket.on("typing", ({ caseId, userId }) => {
     if (!caseId || !userId) return;
 
-    // Send to everyone except the sender
     socket.to(caseId).emit("typing", { userId });
   });
 
-  // Typing stopped indicator
   socket.on("stopTyping", ({ caseId, userId }) => {
     if (!caseId || !userId) return;
 

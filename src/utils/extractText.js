@@ -6,7 +6,7 @@ export const extractText = (filePath) => {
     let fullText = "";
     let lastY = -1;
 
-    console.log("Starting PDF extraction for:", filePath);
+    // console.log("Starting PDF extraction for:", filePath);
 
     pdfReader.parseFileItems(filePath, (err, item) => {
       if (err) {
