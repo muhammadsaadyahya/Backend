@@ -1,33 +1,22 @@
-// import express from "express";
-// import {
-//   createCase,
-//   getCaseById,
-//   updateCase,
-//   assignLawyer,
-//   addMilestone,
-//   addDeadline,
-//   deleteCase,
-//   getMyCases,
-// } from "../controllers/caseController.js";
+import express from "express";
+import * as caseController from "../controllers/caseController.js";
+import { auth } from "../middlewares/authMiddleware.js";
+const router = express.Router();
 
-// import auth from "../middleware/auth.js";
+// Correct the handler for "GET /" to getAllCases
+router.get("/", auth, caseController.getAllCases);
 
-// const router = express.Router();
+// All other routes
+router.get("/:id", auth, caseController.getCaseById);
 
-// router.post("/", auth, createCase);
+router.put("/:id", auth, caseController.updateCase);
+router.put("/:id/assign-lawyer", auth, caseController.assignLawyer);
 
-// router.get("/:id", auth, getCaseById);
+router.post("/", auth, caseController.createCase);
+router.post("/:id/milestones", auth, caseController.addMilestone);
+router.post("/:id/deadlines", auth, caseController.addDeadline);
+router.post("/:id/activity", auth, caseController.logActivity);
 
-// router.put("/:id", auth, updateCase);
+router.delete("/:id", auth, caseController.deleteCase);
 
-// router.put("/:id/assign-lawyer", auth, assignLawyer);
-
-// router.post("/:id/milestones", auth, addMilestone);
-
-// router.post("/:id/deadlines", auth, addDeadline);
-
-// router.get("/", auth, getMyCases);
-
-// router.delete("/:id", auth, deleteCase);
-
-// export default router;
+export default router;

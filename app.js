@@ -6,7 +6,7 @@ import documentRoutes from "./src/routes/documentRoutes.js";
 import notificationRoutes from "./src/routes/notificationRoutes.js";
 import searchRoutes from "./src/routes/searchRoutes.js";
 import cashFlowRoutes from "./src/routes/cashFlowRoutes.js";
-// import chatRoutes from "./src/routes/chatRoutes.js";
+import caseRoutes from "./src/routes/caseRoutes.js";
 import aiRoutes from "./src/routes/aiRoutes.js";
 import connectDB from "./src/config/db.js";
 import path from "path";
@@ -30,7 +30,7 @@ const io = new Server(server, {
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
-// app.use("/api/cases", caseRoutes);
+app.use("/api/cases", caseRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/ai", aiRoutes);
 
