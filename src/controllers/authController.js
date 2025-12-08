@@ -89,7 +89,7 @@ export const login = async (req, res) => {
     res.json({
       msg: "Login successful",
       token: generateToken(user),
-      userObj,
+      user: userObj,
     });
   } catch (error) {
     res.status(500).json({ msg: error.message });

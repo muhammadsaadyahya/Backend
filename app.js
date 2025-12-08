@@ -13,12 +13,12 @@ import path from "path";
 import http from "http";
 import { Server } from "socket.io";
 import chatHandlers from "./src/socket/chatHandlers.js";
-
+import cors from "cors";
 dotenv.config();
 connectDB();
 
 const app = express();
-
+app.use(cors());
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
